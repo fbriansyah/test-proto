@@ -13,8 +13,9 @@ import (
 )
 
 type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Id    uint64 `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
 }
 
 var (
@@ -37,7 +38,19 @@ func getAllUser(ctx context.Context, c pb.UserApiClient) {
 	}
 }
 
-func getUser() {}
+func getUser(ctx context.Context, c pb.UserApiClient) {
+	user := User{}
+	err := json.Unmarshal([]byte(*data), &user)
+	if err != nil {
+		log.Fatalf("something went wrong: %v", err)
+	}
+
+	r, err := c.GetUser(ctx, &pb.UserRequest{Id: user.Id, Email: user.Email})
+	if err != nil {
+		log.Fatalf("something went wrong: %v", err)
+	}
+	log.Println(r.String())
+}
 
 func createUser(ctx context.Context, c pb.UserApiClient) {
 	user := User{}
@@ -75,7 +88,7 @@ func main() {
 	case "create-user":
 		createUser(ctx, c)
 	case "get-user":
-		getUser()
+		getUser(ctx, c)
 	default:
 		log.Fatalln("Unknown Mode:", *mode)
 	}

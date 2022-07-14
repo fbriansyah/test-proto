@@ -47,3 +47,11 @@ func (s *UserServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (
 
 	return &pb.User{Id: uint64(user.ID), Name: user.Name, Email: user.Email}, nil
 }
+
+func (s *UserServer) GetUser(ctx context.Context, in *pb.UserRequest) (*pb.User, error) {
+	user := User{}
+
+	s.DB.Where("email = ?", in.Email).Or("id = ?", in.Id).First(&user)
+
+	return &pb.User{Id: uint64(user.ID), Name: user.Name, Email: user.Email}, nil
+}
