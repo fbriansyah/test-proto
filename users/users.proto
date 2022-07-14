@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "github.com/fbriansyah/test-proto/users/users";
+option java_multiple_files = true;
+option java_package = "io.febrian.id";
+option java_outer_classname = "UsersProto";
+
+package users;
+
+service UserApi {
+  rpc GetUser (UserRequest) returns (User) {}
+  rpc GetAllUser (UsersRequest) returns (UsersResponse) {}
+  rpc CreateUser (CreateUserRequest) returns (User) {}
+}
+
+message UserRequest {
+  reserved 2;
+  uint64 id = 1;
+  string email = 3;
+}
+
+message UsersRequest {
+  uint32 limit = 1;
+  uint32 skip = 2;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message User {
+  uint64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message UsersResponse {
+  repeated User users = 1;
+}
