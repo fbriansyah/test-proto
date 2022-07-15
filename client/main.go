@@ -24,6 +24,19 @@ var (
 	mode = flag.String("mode", "get-all-user", "mode: get-user, create-user, get-all-user")
 )
 
+func route(mode string, ctx context.Context, c pb.UserApiClient) {
+	switch mode {
+	case "get-all-user":
+		getAllUser(ctx, c)
+	case "create-user":
+		createUser(ctx, c)
+	case "get-user":
+		getUser(ctx, c)
+	default:
+		log.Fatalln("Unknown Mode:", mode)
+	}
+}
+
 func getAllUser(ctx context.Context, c pb.UserApiClient) {
 	r, err := c.GetAllUser(ctx, &pb.UsersRequest{})
 	if err != nil {
@@ -82,15 +95,6 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	switch *mode {
-	case "get-all-user":
-		getAllUser(ctx, c)
-	case "create-user":
-		createUser(ctx, c)
-	case "get-user":
-		getUser(ctx, c)
-	default:
-		log.Fatalln("Unknown Mode:", *mode)
-	}
+	route(*mode, ctx, c)
 
 }
