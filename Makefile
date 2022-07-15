@@ -11,4 +11,12 @@ run-server:
 
 proto: p-user
 
-.PHONY: proto p-user tidy run-client run-server
+build-client:
+	@go build -o client client/main.go
+	@mv client/main app-client
+
+build-server:
+	@go build -o server server/main.go 
+	@mv server/main app-server
+
+.PHONY: proto p-user tidy run-client run-server build-client build-server
